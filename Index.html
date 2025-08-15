@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>10M Studio — Roblox Graphics</title>
+  <meta name="description" content="10M Studio — Modern Roblox graphics design services. Order icons, thumbnails, and logos with an elegant, animated site. Generate a shareable summary image/PDF of your order in one click." />
+  <meta name="theme-color" content="#7c3aed" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
+          boxShadow: {
+            glow: '0 0 40px rgba(124,58,237,0.25), 0 0 100px rgba(59,130,246,0.15)'
+          },
+          animation: {
+            float: 'float 12s ease-in-out infinite',
+            shimmer: 'shimmer 3s linear infinite',
+            fadeInUp: 'fadeInUp 0.8s ease-out',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translate3d(0, 0, 0) scale(1)' },
+              '50%': { transform: 'translate3d(0, -10px, 0) scale(1.01)' },
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' },
+            },
+            fadeInUp: {
+              '0%': { opacity: 0, transform: 'translateY(10px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' },
+            },
+          },
+          backdropBlur: { xs: '2px' },
+        }
+      }
+    }
+  </script>
+
+  <!-- Libraries for client-side generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5l3HnQ+oU8mSXqPg3b0a8H7ZSe1QvY20iZqf9y/fo3cKj9cYI2MZ2iFz0g5wzM6mVh0kYq4mO/9A1rXy0wA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-/F4nPZITRXOHm0L9G1r+2Bf3lQm0s5rD1Qh5b8mQwlzv3YP1L7d9vQhI2w0m3A2S1H8YpJYhZKQ7M8gZqT2G7g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-Ub3w5rJq8+ZQy2yq3nq3p0Zp6N2p8X1gWZQbU1e2sYxLw4w2k0D6rQY6H1sKQf2f4kWvQn2o6x2l9pZx0Q8mNw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" integrity="sha512-5x3T66wQm7uM2q8pP4rHk3b6q7vpy8i9qfZr5O0r9CqzjzL4p8n2HYo2vQf9qQ2b6bRkKQ9pQ+8M1OQ9n1j5xg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    html, body { height: 100%; }
+    body { background: radial-gradient(1200px 600px at 20% -10%, rgba(124,58,237,0.25), transparent 60%),
+                         radial-gradient(1000px 500px at 100% 0%, rgba(59,130,246,0.2), transparent 50%),
+                         radial-gradient(800px 500px at 50% 100%, rgba(236,72,153,0.18), transparent 50%),
+                         #0a0a0b; }
+    .glass { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+    .gradient-text { background: linear-gradient(90deg, #a78bfa, #60a5fa, #f472b6, #a78bfa); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 8s linear infinite; }
+    .gradient-border { position: relative; }
+    .gradient-border::before { content: ""; position: absolute; inset: -1px; border-radius: 1.25rem; padding: 1px; background: linear-gradient(135deg, rgba(167,139,250,0.8), rgba(96,165,250,0.8), rgba(244,114,182,0.8)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+    .btn-gradient { background-image: linear-gradient(135deg, #8b5cf6, #3b82f6, #ec4899); background-size: 200% 200%; transition: background-position .3s ease, transform .2s ease; }
+    .btn-gradient:hover { background-position: 100% 0; transform: translateY(-1px); }
+    .badge { background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(14,165,233,0.2)); border: 1px solid rgba(255,255,255,0.08); }
+    .step-active { border-color: rgba(167,139,250,0.6) !important; box-shadow: 0 0 0 1px rgba(167,139,250,0.4) inset; }
+    .hidden { display: none; }
+    .visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; }
+  </style>
+</head>
+
+<body class="font-sans text-slate-200 selection:bg-fuchsia-500/30">
+  <!-- Top Nav -->
+  <header class="sticky top-0 z-40 backdrop-blur glass/40 border-b border-white/10">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-xl" style="background:linear-gradient(135deg,#a78bfa,#60a5fa,#f472b6)"></div>
+        <span class="text-xl font-extrabold tracking-tight gradient-text">10M Studio</span>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="#work" class="hover:text-white/90">Work</a>
+        <a href="#order" class="hover:text-white/90">Order</a>
+        <a href="#about" class="hover:text-white/90">About</a>
+      </nav>
+      <a href="#order" class="btn-gradient px-4 py-2 rounded-xl text-sm font-semibold shadow-glow">Start Order</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden">
+    <div class="absolute -top-24 -left-24 h-96 w-96 rounded-full blur-3xl opacity-30 animate-float" style="background: radial-gradient(circle at 30% 30%, #8b5cf6, transparent 60%);"></div>
+    <div class="absolute -bottom-24 -right-24 h-[28rem] w-[28rem] rounded-full blur-3xl opacity-30 animate-float" style="animation-delay:2s;background: radial-gradient(circle at 70% 70%, #3b82f6, transparent 60%);"></div>
+
+    <div class="max-w-6xl mx-auto px-4 py-20 md:py-28">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl md:text-6xl font-black leading-tight">Roblox <span class="gradient-text">Graphic Design</span> that actually pops.</h1>
+        <p class="mt-5 text-slate-300/90 md:text-lg">Icons, thumbnails, and logos made fast with clean communication. One-page order flow, instant quote, and a gorgeous downloadable summary image & PDF you can DM to us.</p>
+        <div class="mt-8 flex gap-3">
+          <a href="#order" class="btn-gradient px-5 py-3 rounded-2xl font-semibold shadow-glow">Start your order</a>
+          <a href="#work" class="px-5 py-3 rounded-2xl font-semibold glass border border-white/10 hover:border-white/20 transition">See examples</a>
+        </div>
+        <div class="mt-6 flex items-center gap-2 text-xs">
+          <span class="badge px-2 py-1 rounded-lg">Revisions: Unlimited</span>
+          <span class="badge px-2 py-1 rounded-lg">24–48h delivery options</span>
+          <span class="badge px-2 py-1 rounded-lg">PayPal / Robux</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Work preview -->
+  <section id="work" class="max-w-6xl mx-auto px-4 py-10 md:py-14">
+    <h2 class="text-2xl md:text-3xl font-bold">Recent work</h2>
+    <p class="text-slate-300/80 mt-1">A small peek. More on request.</p>
+    <div class="grid md:grid-cols-3 gap-4 mt-6">
+      <div class="gradient-border rounded-2xl p-[1px]">
+        <div class="rounded-2xl overflow-hidden glass">
+          <img alt="Sample 1" src="https://images.unsplash.com/photo-1600268330302-258a6c5e59d4?q=80&w=1200&auto=format&fit=crop" class="object-cover h-56 w-full"/>
+        </div>
+      </div>
+      <div class="gradient-border rounded-2xl p-[1px]">
+        <div class="rounded-2xl overflow-hidden glass">
+          <img alt="Sample 2" src="https://images.unsplash.com/photo-1522029223445-443d52a24ea8?q=80&w=1200&auto=format&fit=crop" class="object-cover h-56 w-full"/>
+        </div>
+      </div>
+      <div class="gradient-border rounded-2xl p-[1px]">
+        <div class="rounded-2xl overflow-hidden glass">
+          <img alt="Sample 3" src="https://images.unsplash.com/photo-1542759564-170a6a0a8ebe?q=80&w=1200&auto=format&fit=crop" class="object-cover h-56 w-full"/>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Order -->
+  <section id="order" class="max-w-6xl mx-auto px-4 py-14">
+    <h2 class="text-2xl md:text-3xl font-bold">Order now</h2>
+    <p class="text-slate-300/80 mt-1">Answer a few quick questions. Be specific so we don’t have to guess.</p>
+
+    <!-- Stepper -->
+    <div class="mt-6 grid md:grid-cols-3 gap-4">
+      <div class="md:col-span-1">
+        <div class="glass rounded-2xl p-4 border border-white/10 sticky top-24">
+          <div id="stepper" class="flex md:flex-col gap-2 text-sm"></div>
+          <div class="mt-4 text-xs text-slate-400">Tip: Attach your .rbxl, refs, and images below. We’ll bundle them into a ZIP with your order summary.</div>
+        </div>
+      </div>
+
+      <div class="md:col-span-2 space-y-4" id="formContainer">
+
+        <!-- STEP 1: Service -->
+        <div class="glass rounded-2xl p-5 border border-white/10 step" data-step-title="Service">
+          <h3 class="text-lg font-semibold">What do you need?</h3>
+          <p class="text-xs text-slate-400">For now we only take Graphics.</p>
+          <div class="mt-4 flex gap-3">
+            <button type="button" class="option btn-gradient px-5 py-3 rounded-xl font-semibold" data-name="service" data-value="Graphics">Graphics</button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Artist -->
+        <div class="glass rounded-2xl p-5 border border-white/10 step hidden" data-step-title="Artist">
+          <h3 class="text-lg font-semibold">Artist preference</h3>
+          <p class="text-xs text-slate-400">Choose 10M or no preference.</p>
+          <div class="mt-4 flex flex-wrap gap-3">
+            <button type="button" class="option px-4 py-2 rounded-xl glass border border-white/10 hover:border-white/20" data-name="artist" data-value="10M">10M</button>
+            <button type="button" class="option px-4 py-2 rounded-xl glass border border-white/10 hover:border-white/20" data-name="artist" data-value="No preference">No preference</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Type -->
+        <div class="glass rounded-2xl p-5 border border-white/10 step hidden" data-step-title="Type">
+          <h3 class="text-lg font-semibold">What are you ordering?</h3>
+          <p class="text-xs text-slate-400">Icon, Thumbnail, or Logo. <a class="underline" href="https://imgur.com/a/zZUOYJf" target="_blank" rel="noopener">See examples</a>.</p>
+          <div class="mt-4 flex flex-wrap gap-3">
+            <button type="button" class="option px-4 py-2 rounded-xl glass border border-white/10 hover:border-white/20" data-name="type" data-value="Icon">Icon</button>
+            <button type="button" class="option px-4 py-2 rounded-xl glass border border-white/10 hover:border-white/20" data-name="type" data-value="Thumbnail">Thumbnail</button>
+            <button type="button" class="option px-4 py-2 rounded-xl glass border border-white/10 hover:border-white/20" data-name="type" data-value="Logo">Logo</button>
+          </div>
+        </div>
+
+        <!-- STEP 4: Style/Text/Background -->
+        <div class="glass rounded-2xl p-5 border border-white/10 step hidden" data-step-title="Details">
+          <h3 class="text-lg font-semibold">Details</h3>
+          <p class="text-xs text-slate-400">Write in as much detail as possible so we don’t have to ask extra questions.</p>
+          <div class="mt-4 grid md:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-sm">Style</span>
+              <input id="style" type="text" placeholder="e.g. hand-drawn cartoon, realistic, 3D" class="mt-1 w-full rounded-xl glass border border-white/10 px-3 py-2" />
+            </label>
+            <label class="block">
+              <span class="text-sm">Text to include</span>
+              <input id="textInclude" type="text" placeholder="Exact text or — none" class="mt-1 w-full rounded-xl glass border border-white/10 px-3 py-2" />
+            </label>
+          </div>
+          <div class="mt-4 grid md:grid-cols-2 gap-4">
+            <label class="block md:col-span-2">
+              <span class="text-sm">Background</span>
+              <input id="background" type="text" placeholder="Transparent, blurred city, custom map, plain black…" class="mt-1 w-full rounded-xl glass border border-white/10 px-3 py-2" />
+            </label>
+          </div>
+        </div>
+
+        <!-- STEP 5: Assets & References -->
+        <div class="glass rounded-2xl p-5 border border-white/10 step hidden" data-step-title="Assets">
+          <h3 class="text-lg font-semibold">Assets & references</h3>
+          <p class="text-xs text-slate-400">Attach .rbxl/.rbxlx, images, or a ZIP. We’ll include these in a downloadable package.</p>
+
+          <div class="mt-4 grid md:grid-cols-2 gap-4">
+            <label class="block md:col-span-2">
+              <span class="text-sm">Characters/Map or assets to include</span>
+              <textarea id="assetsDesc" rows="3" class="mt-1 w-full rounded-xl glass border border-white/10 px-3 py-2" placeholder="Describe, or note the outfits/poses"></textarea>
+            </label>
+            <label class="block">
+              <span class="text-sm">Upload assets</span>
+              <input id="assetsFiles" type="file" class="mt-1 w-full rounded-xl glass border border-white/10 px-3 py-2" multiple accept=".rbxl,.rbxlx,.zip,image/*" />
+            </label>
+            <label class="block">
+              <span class="text-sm">Reference image(s)</span>
+              <input id="refFiles" type="file" class="mt-1 w-full rounded-xl glass border border-white/10 px-3 py-2" multiple accept="image/*,.zip" />
+            </label>
+            <label class="block md:col-span-2">
+              <span class="text-sm">Reference links</span>
+              <textarea id="refLinks" rows="3" class="mt-1 w-full rounded-xl glass border border-white/10 px-3 py-2" placeholder="Paste image links or similar styles"></textarea>
+            </label>
+          </div>
+        </div>
+
+        <!-- STEP 6: Options -->
+        <div class="glass rounded-2xl p-5 border border-white/10 step hidden" data-step-title="Options">
+          <h3 class="text-lg font-semibold">Options</h3>
+          <div class="mt-4 grid md:grid-cols-2 gap-4">
+            <div>
+              <div class="text-sm mb-2">Preferred delivery</div>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" class="option px-3 py-2 rounded-xl glass border border-white/10" data-name="delivery" data-value="<24h (+$5)">< 24h (+$5)</button>
+                <button type="button" class="option px-3 py-2 rounded-xl glass border border-white/10" data-name="delivery" data-value="24h">24h</button>
+                <button type="button" class="option px-3 py-2 rounded-xl glass border border-white/10" data-name="delivery" data-value="48h">48h</button>
+                <button type="button" class="option px-3 py-2 rounded-xl glass border border-white/10" data-name="delivery" data-value="No preference">No preference</button>
+              </div>
+            </div>
+            <div>
+              <div class="text-sm mb-2">Project difficulty</div>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" class="option px-3 py-2 rounded-xl glass border border-white/10" data-name="difficulty" data-value="Simple">Simple</button>
+                <button type="button" class="option px-3 py-2 rounded-xl glass border border-white/10" data-name="difficulty" data-value="Advanced">Advanced</button>
+                <button type="button" class="option px-3 py-2 rounded-xl glass border border-white/10" data-name="difficulty" data-value="Super Advanced">Super Advanced</button>
+              </div>
+              <p class="text-xs text-slate-400 mt-2">Simple: common styles (e.g. Brain Rot, Grow a Garden). Advanced: 3D backgrounds, characters, or hand-drawn. Super Advanced: realistic/complex backgrounds, many characters, or super-detailed hand-drawn.</p>
+            </div>
+          </div>
+
+          <div class="mt-4 grid md:grid-cols-3 gap-4">
+            <label class="block">
+              <span class="text-sm">Payment method</span>
+              <select id="payment" class="mt-1 w-full rounded-xl glass border border-white/10 px-3 py-2">
+                <option>PayPal</option>
+                <option>Robux</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-sm">Your name / Discord</span>
+              <input id="customer" type="text" placeholder="e.g. 10M#1234" class="mt-1 w-full rounded-xl glass border border-white/10 px-3 py-2" />
+            </label>
+            <label class="block">
+              <span class="text-sm">Conversion rate (1 USD = R$)</span>
+              <input id="rate" type="number" min="1" value="80" class="mt-1 w-full rounded-xl glass border border-white/10 px-3 py-2" />
+            </label>
+          </div>
+
+          <div class="mt-4 grid md:grid-cols-3 gap-4">
+            <label class="block">
+              <span class="text-sm">Base price (USD)</span>
+              <input id="basePrice" type="number" min="0" step="1" placeholder="Auto" class="mt-1 w-full rounded-xl glass border border-white/10 px-3 py-2" />
+              <p class="text-xs text-slate-400 mt-1">Leave empty to auto-calc by type & difficulty.</p>
+            </label>
+            <div class="block">
+              <span class="text-sm">Estimated total (USD)</span>
+              <div id="totalUSD" class="mt-1 px-3 py-2 rounded-xl glass border border-white/10">$0</div>
+            </div>
+            <div class="block">
+              <span class="text-sm">Estimated total (Robux)</span>
+              <div id="totalRBX" class="mt-1 px-3 py-2 rounded-xl glass border border-white/10">R$0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 7: Review & Generate -->
+        <div class="glass rounded-2xl p-5 border border-white/10 step hidden" data-step-title="Review">
+          <h3 class="text-lg font-semibold">Review & generate</h3>
+          <div id="summaryCard" class="mt-4 gradient-border rounded-2xl p-[1px]">
+            <div class="rounded-2xl p-5 glass border border-white/10">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-xs tracking-widest uppercase text-slate-400">Order summary</div>
+                  <div class="text-2xl font-extrabold gradient-text">10M Studio</div>
+                </div>
+                <div class="text-right">
+                  <div id="sumPriceUSD" class="text-xl font-bold">$0</div>
+                  <div id="sumPriceRBX" class="text-sm text-slate-400">R$0</div>
+                </div>
+              </div>
+              <div class="mt-4 grid md:grid-cols-2 gap-4 text-sm">
+                <div id="sumLeft"></div>
+                <div id="sumRight"></div>
+              </div>
+              <div class="mt-4 text-xs text-slate-400">Revisions: Unlimited • Conversion rate: <span id="sumRate">1 USD = 80 R$</span></div>
+            </div>
+          </div>
+
+          <div class="mt-5 grid md:grid-cols-2 gap-3">
+            <button id="btnCopyText" class="px-4 py-3 rounded-xl glass border border-white/10 hover:border-white/20">Copy text summary</button>
+            <button id="btnCopyImage" class="px-4 py-3 rounded-xl glass border border-white/10 hover:border-white/20">Copy image</button>
+            <button id="btnDownloadPNG" class="btn-gradient px-4 py-3 rounded-xl font-semibold">Download image (PNG)</button>
+            <button id="btnDownloadPDF" class="btn-gradient px-4 py-3 rounded-xl font-semibold">Download PDF</button>
+            <button id="btnDownloadZIP" class="btn-gradient px-4 py-3 rounded-xl font-semibold md:col-span-2">Download full package (ZIP)</button>
+          </div>
+
+          <div class="mt-4 flex flex-wrap gap-2 text-xs text-slate-400">
+            <button id="btnReset" class="px-3 py-2 rounded-xl glass border border-white/10 hover:border-white/20">Retry (reset)</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="max-w-6xl mx-auto px-4 py-14">
+    <div class="glass rounded-2xl p-6 border border-white/10">
+      <h3 class="text-xl font-semibold">About 10M Studio</h3>
+      <p class="text-slate-300/90 mt-2">We make Roblox graphics that look premium without wasting your time. Clear upfront pricing, unlimited revisions, and fast delivery. This site was built to keep everything simple: fill the form, get an instant quote, download a clean summary image/PDF, and DM it to us with your ZIP of assets. That’s it.</p>
+    </div>
+  </section>
+
+  <footer class="border-t border-white/10 py-10">
+    <div class="max-w-6xl mx-auto px-4 text-sm text-slate-400 flex flex-col md:flex-row items-center justify-between gap-2">
+      <div>© <span id="year"></span> 10M Studio</div>
+      <div>Made with gradients ✦</div>
+    </div>
+  </footer>
+
+  <template id="summaryTextTpl">{summary}</template>
+
+  <script>
+    const steps = Array.from(document.querySelectorAll('.step'));
+    const stepper = document.getElementById('stepper');
+    const state = { selections: {}, fields: {} };
+    const defaults = {
+      prices: { Icon: 10, Thumbnail: 15, Logo: 20 },
+      diffMul: { 'Simple': 1.0, 'Advanced': 1.5, 'Super Advanced': 2.0 },
+      rushFee: 5,
+      rate: 80
+    };
+
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+    // Build stepper
+    steps.forEach((s, i) => {
+      const el = document.createElement('button');
+      el.className = 'w-full text-left px-3 py-2 rounded-xl border border-white/10 hover:border-white/20 glass';
+      el.textContent = (i+1) + '. ' + (s.dataset.stepTitle || 'Step');
+      el.addEventListener('click', () => showStep(i));
+      stepper.appendChild(el);
+    });
+
+    function showStep(i){
+      steps.forEach((s, idx) => {
+        s.classList.toggle('hidden', idx !== i);
+        stepper.children[idx].classList.toggle('step-active', idx === i);
+      });
+      window.scrollTo({ top: stepper.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' });
+    }
+
+    // Option buttons
+    $$('.option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.dataset.name; const value = btn.dataset.value;
+        state.selections[name] = value;
+        // Toggle active styles within sibling option group
+        btn.parentElement.querySelectorAll('.option').forEach(b => b.classList.remove('border-white/30'));
+        btn.classList.add('border-white/30');
+        // Auto-advance to next visible step
+        const parent = btn.closest('.step');
+        const idx = steps.indexOf(parent);
+        if(idx >= 0 && idx < steps.length-1){ showStep(idx+1); }
+        recalc();
+      });
+    });
+
+    // Inputs
+    ['style','textInclude','background','assetsDesc','refLinks','customer'].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener('input', () => { state.fields[id] = el.value; });
+    });
+
+    // Payment & rate & base price
+    const payment = $('#payment');
+    payment.addEventListener('change', () => { state.fields.payment = payment.value; recalc(); });
+    const rate = $('#rate');
+    rate.addEventListener('input', () => { state.fields.rate = parseFloat(rate.value||defaults.rate); recalc(); });
+    const basePrice = $('#basePrice');
+    basePrice.addEventListener('input', () => { state.fields.basePrice = parseFloat(basePrice.value||0); recalc(); });
+
+    // Files
+    const files = { assetsFiles: [], refFiles: [] };
+    function gatherFiles(inputId){
+      const list = Array.from(document.getElementById(inputId).files || []);
+      files[inputId] = list; // store File objects
+    }
+    $('#assetsFiles').addEventListener('change', () => gatherFiles('assetsFiles'));
+    $('#refFiles').addEventListener('change', () => gatherFiles('refFiles'));
+
+    function autoBase(){
+      const t = state.selections.type;
+      const d = state.selections.difficulty;
+      if(!t) return 0;
+      const base = defaults.prices[t] || 0;
+      const mul = defaults.diffMul[d] || 1;
+      return Math.round(base * mul);
+    }
+
+    function recalc(){
+      const r = Number(rate.value || defaults.rate);
+      const delivery = state.selections.delivery || '';
+      const rush = delivery.includes('<24h') ? defaults.rushFee : 0;
+      let usd = Number(basePrice.value || 0);
+      if(!usd){ usd = autoBase(); }
+      usd += rush;
+      const rbx = Math.round(usd * r);
+      $('#totalUSD').textContent = `$${usd}`;
+      $('#totalRBX').textContent = `R$${rbx}`;
+    }
+
+    // Move through steps on Enter for text fields
+    $$('#formContainer input, #formContainer textarea').forEach(el => {
+      el.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault();
+          const parent = el.closest('.step'); const idx = steps.indexOf(parent); if(idx>=0) showStep(Math.min(idx+1, steps.length-1));
+        }
+      })
+    });
+
+    // When entering Review step, build summary card
+    const observer = new MutationObserver(()=>{
+      const reviewVisible = !steps[steps.length-1].classList.contains('hidden');
+      if(reviewVisible){ buildSummary(); }
+    });
+    observer.observe(steps[steps.length-1], { attributes:true, attributeFilter:['class'] });
+
+    function buildSummary(){
+      const sel = state.selections; const f = state.fields;
+      const r = Number(rate.value || defaults.rate);
+      const delivery = sel.delivery || '';
+      const rush = delivery.includes('<24h') ? defaults.rushFee : 0;
+      let usd = Number(basePrice.value || 0); if(!usd) usd = autoBase(); usd += rush;
+      const rbx = Math.round(usd * r);
+      $('#sumPriceUSD').textContent = `$${usd}`;
+      $('#sumPriceRBX').textContent = `R$${rbx}`;
+      $('#sumRate').textContent = `1 USD = ${r} R$`;
+
+      const left = [
+        ['Service', sel.service||'Graphics'],
+        ['Type', sel.type||'-'],
+        ['Artist', sel.artist||'-'],
+        ['Difficulty', sel.difficulty||'-'],
+        ['Delivery', sel.delivery||'-'],
+        ['Payment', f.payment||payment.value]
+      ];
+      const right = [
+        ['Style', f.style||'-'],
+        ['Text', f.textInclude||'-'],
+        ['Background', f.background||'-'],
+        ['Assets (desc)', f.assetsDesc||'-'],
+        ['Ref links', (f.refLinks||'-').replace(/\n/g,', ')],
+        ['Customer', f.customer||'-']
+      ];
+      $('#sumLeft').innerHTML = left.map(([k,v]) => row(k,v)).join('');
+      $('#sumRight').innerHTML = right.map(([k,v]) => row(k,v)).join('');
+
+      function row(k,v){
+        return `<div class="flex items-start gap-3"><div class="text-slate-400 w-28 shrink-0">${escapeHtml(k)}</div><div class="text-slate-100">${escapeHtml(String(v))}</div></div>`;
+      }
+
+      // Save summary text (for copy)
+      const lines = [
+        `10M Studio — Order Summary`,
+        `Service: ${sel.service||'Graphics'}`,
+        `Type: ${sel.type||'-'}`,
+        `Artist: ${sel.artist||'-'}`,
+        `Difficulty: ${sel.difficulty||'-'}`,
+        `Delivery: ${sel.delivery||'-'}`,
+        `Payment: ${f.payment||payment.value}`,
+        `Style: ${f.style||'-'}`,
+        `Text: ${f.textInclude||'-'}`,
+        `Background: ${f.background||'-'}`,
+        `Assets (desc): ${f.assetsDesc||'-'}`,
+        `Ref links: ${(f.refLinks||'-').replace(/\n/g, ', ')}`,
+        `Customer: ${f.customer||'-'}`,
+        `Revisions: Unlimited`,
+        `Conversion: 1 USD = ${r} R$`,
+        `Total: $${usd} / R$${rbx}`,
+      ];
+      const tpl = document.getElementById('summaryTextTpl');
+      tpl.textContent = lines.join('\n');
+    }
+
+    function escapeHtml(s){
+      return s.replace(/[&<>\"]+/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
+    }
+
+    // Actions
+    async function renderSummaryImage(){
+      const node = document.getElementById('summaryCard');
+      const canvas = await html2canvas(node, { backgroundColor: null, scale: 2 });
+      return canvas.toDataURL('image/png');
+    }
+
+    async function downloadPNG(){
+      const dataUrl = await renderSummaryImage();
+      saveAs(dataUrlToBlob(dataUrl), fileName('order-summary.png'));
+    }
+
+    async function copyImage(){
+      try{
+        const dataUrl = await renderSummaryImage();
+        const blob = dataUrlToBlob(dataUrl);
+        if(navigator.clipboard && window.ClipboardItem){
+          await navigator.clipboard.write([ new ClipboardItem({ 'image/png': blob }) ]);
+          alert('Summary image copied to clipboard.');
+        } else { alert('Clipboard image API not supported. Use Download image instead.'); }
+      }catch(e){ alert('Could not copy image: '+e.message); }
+    }
+
+    async function downloadPDF(){
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ unit:'pt', format:'a4' });
+      const dataUrl = await renderSummaryImage();
+      const img = new Image(); img.src = dataUrl; await img.decode();
+      const pageW = pdf.internal.pageSize.getWidth();
+      const margin = 24; const imgW = pageW - margin*2; const imgH = img.height * (imgW / img.width);
+      pdf.addImage(dataUrl, 'PNG', margin, margin, imgW, imgH);
+      pdf.setFontSize(9); pdf.setTextColor(160);
+      pdf.text('10M Studio — Revisions: Unlimited', margin, imgH + margin + 14);
+      pdf.save(fileName('order-summary.pdf'));
+    }
+
+    async function downloadZIP(){
+      const zip = new JSZip();
+      // Summary assets
+      const pngDataUrl = await renderSummaryImage();
+      zip.file('order-summary.png', dataUrlToArrayBuffer(pngDataUrl));
+      // PDF
+      const { jsPDF } = window.jspdf; const pdf = new jsPDF({ unit:'pt', format:'a4' });
+      const img = new Image(); img.src = pngDataUrl; await img.decode();
+      const pageW = pdf.internal.pageSize.getWidth(); const margin = 24; const imgW = pageW - margin*2; const imgH = img.height * (imgW / img.width);
+      pdf.addImage(pngDataUrl, 'PNG', margin, margin, imgW, imgH);
+      const pdfBlob = pdf.output('blob');
+      zip.file('order-summary.pdf', pdfBlob);
+      // JSON
+      const orderJson = JSON.stringify(collectOrder(), null, 2);
+      zip.file('order.json', orderJson);
+      // Attachments
+      for(const f of (files.assetsFiles||[])){
+        const buf = await f.arrayBuffer(); zip.file('attachments/assets/'+sanitize(f.name), buf);
+      }
+      for(const f of (files.refFiles||[])){
+        const buf = await f.arrayBuffer(); zip.file('attachments/references/'+sanitize(f.name), buf);
+      }
+      const blob = await zip.generateAsync({ type:'blob' });
+      saveAs(blob, fileName('10MStudio-order-package.zip'));
+    }
+
+    function fileName(base){
+      const name = (state.fields.customer||'client').replace(/[^a-z0-9-_]/gi,'_');
+      return `${name}-${base}`;
+    }
+
+    function dataUrlToBlob(dataUrl){
+      const arr = dataUrl.split(','); const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]); let n = bstr.length; const u8 = new Uint8Array(n);
+      while(n--){ u8[n] = bstr.charCodeAt(n); }
+      return new Blob([u8], { type: mime });
+    }
+    function dataUrlToArrayBuffer(dataUrl){ return dataUrlToBlob(dataUrl); }
+    function sanitize(s){ return s.replace(/[^a-z0-9-_.]/gi,'_'); }
+
+    function collectOrder(){
+      const r = Number(rate.value || defaults.rate);
+      const delivery = state.selections.delivery || '';
+      const rush = delivery.includes('<24h') ? defaults.rushFee : 0;
+      let usd = Number(basePrice.value || 0); if(!usd) usd = autoBase(); usd += rush;
+      const rbx = Math.round(usd * r);
+      return {
+        service: state.selections.service || 'Graphics',
+        artist: state.selections.artist || '',
+        type: state.selections.type || '',
+        difficulty: state.selections.difficulty || '',
+        delivery: state.selections.delivery || '',
+        payment: state.fields.payment || payment.value,
+        style: state.fields.style||'',
+        text: state.fields.textInclude||'',
+        background: state.fields.background||'',
+        assetsDesc: state.fields.assetsDesc||'',
+        refLinks: state.fields.refLinks||'',
+        customer: state.fields.customer||'',
+        revisions: 'Unlimited',
+        rate: r,
+        totals: { usd, robux: rbx },
+        timestamp: new Date().toISOString()
+      };
+    }
+
+    // Buttons
+    $('#btnDownloadPNG').addEventListener('click', downloadPNG);
+    $('#btnDownloadPDF').addEventListener('click', downloadPDF);
+    $('#btnDownloadZIP').addEventListener('click', downloadZIP);
+    $('#btnCopyImage').addEventListener('click', copyImage);
+    $('#btnCopyText').addEventListener('click', () => {
+      const t = document.getElementById('summaryTextTpl').textContent; navigator.clipboard.writeText(t).then(()=>alert('Summary text copied.'));
+    });
+    $('#btnReset').addEventListener('click', () => { window.location.reload(); });
+
+    // Init
+    showStep(0); recalc();
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
